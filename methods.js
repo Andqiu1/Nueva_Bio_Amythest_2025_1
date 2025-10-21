@@ -1,28 +1,65 @@
-/*
-//Button class example
-//Makes creating and using buttons easy
-//Credit to Hanson for Empty Console
-
-var butt = new button(200,105,200,90);
-//first value is middle x of the rectangle, second value is middle y of the rectange, third value is width, fourth value is height
-
-function draw(){
-  push();
-  butt.work();
-  fill(20)
-  stroke(255);
-  strokeWeight(5);
-  translate(butt.x,butt.y);
-  scale(butt.size,butt.size);
-  rect(0,0,butt.sizeX,butt.sizeY,5);
-  textSize(60);
-  fill(255);
-  noStroke();
-  text("CLICK",0,0);
-  pop();
+function particleShower(x,y,number,dMin,dMax,vMin,vMax,speedRatioMin,speedRatioMax,sizeRatioMin,sizeRatioMax,color1,lifespan){
+  for(var i=0;i<number;i++){
+    var velocity=random(vMin,vMax)
+    var diameter=random(dMin,dMax)
+    var angle=random(0,360)
+    var xSpeed=cos(angle)*velocity
+    var ySpeed=sin(angle)*velocity
+    var speedRatio=random(speedRatioMin,speedRatioMax)
+    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,color1,lifespan)
+  }
 }
-*/
 
+function killParticles(){
+  for(var i=0;i<particles.length;i++){
+    if(particles[i].lifespan<=0){
+      particles.splice(i,1)
+      i--
+    }
+  }
+}
+
+class particle{
+  constructor(a,b,c,d,e,f,g,h,i){
+    this.x=a
+    this.y=b
+    this.diameter=c
+    this.xSpeed=d
+    this.ySpeed=e
+    this.speedRatio=f
+    this.sizeRatio=g
+    this.color1=h //(r,g,b)
+    this.lifespan=i
+    this.ogLifespan=i
+    this.opacity=255
+  }
+  display(){
+    push()
+    fill(this.color1,opacity)//might be weird
+    noStroke()
+    ellipseMode(CENTER)
+    ellipse(this.x,this.y,this.diameter)
+    pop()
+  }
+  work(){
+    this.x+=xSpeed + random(-0.05*xSpeed,0.05*xSpeed)
+    this.y+=ySpeed + random(-0.05*ySpeed,0.05*ySpeed)
+    this.xSpeed*=this.speedRatio
+    this.ySpeed*=this.speedRatio
+    this.diameter*=this.sizeRatio
+    this.opacity=(lifespan/ogLifespan)*255
+    this.lifeSpan-=1
+    this.display()
+    this.isDead()
+  }
+  isDead(){
+    if(this.diameter<0){
+      this.lifespan=-100000
+    }
+  }
+}
+
+//Credit to Hanson
 class button{
   constructor(a,b,c,d){
     this.x=a;
@@ -76,19 +113,7 @@ class button{
   }
 }
 
-/*
-//rectHit function example
-//returns whether or not two rectangles are colliding
-//Credit to Hanson for Empty Console
-
-function draw(){
-  if(rectHit(200,300,250,500,30,80,100,300)){
-  //first value is the middle x position of the first rectangle, second value is the middle y position of the first rectangle, third value is the middle x position of the second rectange, fourth value is the middle y position of the second rectangle, fifth value is the width of the first rectangle, sixth value is the height of the first rectange, seventh value is the width of the second rectangle, eight value is the height of the second rectangle
-    print("hitting")
-  }
-}
-*/
-
+//Credit to Hanson
 function rectHit(x,y,x2,y2,xs,ys,xs2,ys2){
   return(abs(x-x2)<xs/2+xs2/2&&abs(y-y2)<ys/2+ys2/2);
 }
