@@ -1,11 +1,26 @@
+var screen=0
+var particles=[]
+var mouseClick=false
+
 function setup() {
   createCanvas(400, 400);
   angleMode(DEGREES)
+  background(22)
 }
 
-screen=0
-particles=[]
+
 
 function draw() {
-  background(220);
+  background(22);
+  particleDemo();
+  
+  
+  
+  
+  runParticles()
+  mouseClick=false
+}
+
+function mouseClicked(){
+  mouseClick=true
 }

@@ -1,4 +1,11 @@
-function particleShower(x,y,number,dMin,dMax,vMin,vMax,speedRatioMin,speedRatioMax,sizeRatioMin,sizeRatioMax,color1,lifespan){
+function runParticles(){
+  for(var i=0;i<particles.length;i++){
+    particles[i].work()
+  }
+  killParticles()
+}
+
+function particleShower(x,y,number,dMin,dMax,vMin,vMax,speedRatioMin,speedRatioMax,sizeRatioMin,sizeRatioMax,r,g,b,lifespanMin,lifespanMax){
   for(var i=0;i<number;i++){
     var velocity=random(vMin,vMax)
     var diameter=random(dMin,dMax)
@@ -6,7 +13,21 @@ function particleShower(x,y,number,dMin,dMax,vMin,vMax,speedRatioMin,speedRatioM
     var xSpeed=cos(angle)*velocity
     var ySpeed=sin(angle)*velocity
     var speedRatio=random(speedRatioMin,speedRatioMax)
-    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,color1,lifespan)
+    var sizeRatio=random(sizeRatioMin,sizeRatioMax)
+    var R=r
+    var G=g
+    var B=b
+    if(r=="random"){
+      R=random(0,255)
+    }
+    if(g=="random"){
+      G=random(0,255)
+    }
+    if(b=="random"){
+      B=random(0,255)
+    }
+    var lifespan=random(lifespanMin,lifespanMax)
+    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,sizeRatio,R,G,B,lifespan)
   }
 }
 
@@ -20,7 +41,7 @@ function killParticles(){
 }
 
 class particle{
-  constructor(a,b,c,d,e,f,g,h,i){
+  constructor(a,b,c,d,e,f,g,h,i,j,k){
     this.x=a
     this.y=b
     this.diameter=c
@@ -28,27 +49,31 @@ class particle{
     this.ySpeed=e
     this.speedRatio=f
     this.sizeRatio=g
-    this.color1=h //(r,g,b)
-    this.lifespan=i
-    this.ogLifespan=i
-    this.opacity=255
+    this.r=h //(r,g,b)
+    this.g=i
+    this.b=j
+    this.lifespan=k
+    this.ogLifespan=k
+    this.opacity=80
   }
   display(){
     push()
-    fill(this.color1,opacity)//might be weird
+    fill(this.r,this.g,this.b,this.opacity)//might be weird
+    // fill("red")
     noStroke()
     ellipseMode(CENTER)
     ellipse(this.x,this.y,this.diameter)
+    // ellipse(this.x,this.y,100)
     pop()
   }
   work(){
-    this.x+=xSpeed + random(-0.05*xSpeed,0.05*xSpeed)
-    this.y+=ySpeed + random(-0.05*ySpeed,0.05*ySpeed)
+    this.x+=this.xSpeed + random(-0.05*this.xSpeed,0.05*this.xSpeed)
+    this.y+=this.ySpeed + random(-0.05*this.ySpeed,0.05*this.ySpeed)
     this.xSpeed*=this.speedRatio
     this.ySpeed*=this.speedRatio
-    this.diameter*=this.sizeRatio
-    this.opacity=(lifespan/ogLifespan)*255
-    this.lifeSpan-=1
+    // this.diameter*=this.sizeRatio
+    this.opacity=(this.lifespan/this.ogLifespan)*100
+    this.lifespan-=1
     this.display()
     this.isDead()
   }
