@@ -5,7 +5,7 @@ function runObjects(){
 }
 
 class object{
-  constructor(a,b,c,d,e,f){
+  constructor(a,b,c,d,e,f,g){
     this.type=a
     this.x=b
     this.y=c
@@ -18,9 +18,11 @@ class object{
     this.preX=a
     this.preY=b
     this.draggable=f
+    this.particleColor=g //if this is set to [], no particles. For particles, it has to be a list of three colors(can be "random")
     // print("wsg")
   }
   display(){
+    // print(this.particleColor)
     push()
     imageMode(CENTER)
     // image("molecule",this.x,this.y,this.sizeX,this.sizeY)
@@ -52,7 +54,12 @@ class object{
     if(this.dragging && ((this.x==this.preX)||(this.y==this.preY))){
         this.x=pmouseX+this.mouseOffsetX
       this.y=pmouseY+this.mouseOffsetY
-      particleShower(this.x, this.y, 30, 5, max(this.sizeX,this.sizeY)*0.9, 0, sqrt((abs(this.x-this.preX))^2+(abs(this.y-this.preY))^2), 0.9, 0.99, 0.85, 0.87, "random","random","random", 15,29)
+      if(this.particleColor != []){
+        // print("particle")
+        // print(this.particleColor)
+        particleShower(this.x, this.y, 30, 5, max(this.sizeX,this.sizeY)*0.9, 0, sqrt((abs(this.x-this.preX))^2+(abs(this.y-this.preY))^2), 0.9, 0.99, 0.85, 0.87, this.particleColor[0],this.particleColor[1],this.particleColor[2], 15,29)
+      }
+      
       
     }
     
@@ -60,7 +67,7 @@ class object{
   click(){
     if(rectHit(this.x,this.y,mouseX,mouseY,this.sizeX,this.sizeY,0.5,0.5) && mouseClick){
       this.clicks+=1
-      particleShower(this.x, this.y, 100, 3, 15, 0, 4, 0.9, 0.99, 0.85, 0.87, "random","random","random", 10,20)
+      particleShower(this.x, this.y, 100, 3, 15, 0, 4, 0.9, 0.99, 0.85, 0.87, this.particleColor[0],this.particleColor[1],this.particleColor[2], 10,20)
     }
   }
 }
@@ -94,7 +101,7 @@ function particleShower(x,y,number,dMin,dMax,vMin,vMax,speedRatioMin,speedRatioM
       B=random(0,255)
     }
     var lifespan=random(lifespanMin,lifespanMax)
-    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,sizeRatio,R,G,B,lifespan)
+    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,sizeRatio,R+random(-5,5),G+random(-5,5),B+random(-5,5),lifespan)
   }
 }
 
