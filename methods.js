@@ -101,7 +101,7 @@ function particleShower(x,y,number,dMin,dMax,vMin,vMax,speedRatioMin,speedRatioM
       B=random(0,255)
     }
     var lifespan=random(lifespanMin,lifespanMax)
-    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,sizeRatio,R+random(-5,5),G+random(-5,5),B+random(-5,5),lifespan)
+    particles[particles.length]=new particle(x,y,diameter,xSpeed,ySpeed,speedRatio,sizeRatio,R+random(-80,80),G+random(-80,80),B+random(-80,80),lifespan)
   }
 }
 
