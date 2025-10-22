@@ -1,3 +1,70 @@
+function runObjects(){
+  for(var i=0;i<objects.length;i++){
+    objects[i].work()
+  }
+}
+
+class object{
+  constructor(a,b,c,d,e,f){
+    this.type=a
+    this.x=b
+    this.y=c
+    this.sizeX=d
+    this.sizeY=e
+    this.dragging=false
+    this.clicks=0
+    this.mouseOffsetX=0
+    this.mouseOffsetY=0
+    this.preX=a
+    this.preY=b
+    this.draggable=f
+    // print("wsg")
+  }
+  display(){
+    push()
+    imageMode(CENTER)
+    // image("molecule",this.x,this.y,this.sizeX,this.sizeY)
+    ellipseMode(CENTER)
+    fill("white")
+    stroke("black")
+    ellipse(this.x,this.y,this.sizeX,this.sizeY)
+    pop()
+  }
+  work(){
+    
+    this.drag()
+    this.click()
+    this.display()
+    this.preY=this.y
+    this.preX=this.x
+  }
+  drag(){
+    // print(mouseIsPressed)
+    if(rectHit(this.x,this.y,mouseX,mouseY,this.sizeX,this.sizeY,0.5,0.5) && mouseIsPressed && !this.dragging && this.draggable){
+      this.dragging=true
+      this.mouseOffsetX=this.x-mouseX
+      this.mouseOffsetY=this.y-mouseY
+    }
+    if(this.dragging && !mouseIsPressed){
+      this.dragging=false
+      
+    }
+    if(this.dragging && ((this.x==this.preX)||(this.y==this.preY))){
+        this.x=pmouseX+this.mouseOffsetX
+      this.y=pmouseY+this.mouseOffsetY
+      particleShower(this.x, this.y, 30, 5, max(this.sizeX,this.sizeY)*0.9, 0, sqrt((abs(this.x-this.preX))^2+(abs(this.y-this.preY))^2), 0.9, 0.99, 0.85, 0.87, "random","random","random", 15,29)
+      
+    }
+    
+  }
+  click(){
+    if(rectHit(this.x,this.y,mouseX,mouseY,this.sizeX,this.sizeY,0.5,0.5) && mouseClick){
+      this.clicks+=1
+      particleShower(this.x, this.y, 100, 3, 15, 0, 4, 0.9, 0.99, 0.85, 0.87, "random","random","random", 10,20)
+    }
+  }
+}
+
 function runParticles(){
   for(var i=0;i<particles.length;i++){
     particles[i].work()
