@@ -1,3 +1,20 @@
+class animation{
+  constructor(a){
+    this.stages=a
+    this.count=0
+    this.currentStage=0
+  }
+  work(){
+    var totalCount=0
+    for(var i=0;i<stages.length;i++){
+      totalCount+=stages[i]
+      if(this.count<=totalCount){
+        this.currentStage=i
+      }
+    }
+  }
+}
+
 function runObjects(){
   for(var i=0;i<objects.length;i++){
     objects[i].work()
@@ -146,7 +163,8 @@ class particle{
     this.xSpeed*=this.speedRatio
     this.ySpeed*=this.speedRatio
     // this.diameter*=this.sizeRatio
-    this.opacity=(this.lifespan/this.ogLifespan)*100
+    // this.opacity=(this.lifespan/this.ogLifespan)*100
+    this.opacity=255
     this.lifespan-=1
     this.display()
     this.isDead()
