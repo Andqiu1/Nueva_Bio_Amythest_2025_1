@@ -1,17 +1,100 @@
+// function nextAnimation(){
+//   // if()
+//   if(nextMoving){
+//     nextAnimationSequence.work()
+//     if(nextAnimationSequence.currentStage==0){
+//       ellipse(nextAnimationSequence.totalCount/100*600)
+//     }
+//   }
+// }
+
+function nextButtonWork(){
+  if(nextAnimationSequence.running && nextAnimationSequence.count>0){
+    nextAnimationSequence.count+=1
+    if(nextAnimationSequence.currentStage==0){
+      // print("happening")
+      push()
+      ellipseMode(CENTER)
+      fill("green")
+      // fill(random(0,255),random(0,255),random(0,255),random(0,255))
+      ellipse(width/2,height/2,nextAnimationSequence.count*max(width,height)/nextAnimationSequence.stages[0]*1.5)
+      pop()
+    }else if(nextAnimationSequence.currentStage==1){
+      screen+=1
+      push()
+      ellipseMode(CENTER)
+      fill("green")
+      // fill(random(0,255),random(0,255),random(0,255),random(0,255))
+      ellipse(width/2,height/2,nextAnimationSequence.count*max(width,height)/nextAnimationSequence.stages[0]*1.5)
+      pop()
+    }else if(nextAnimationSequence.currentStage==2){
+      // print("2")
+      push()
+      ellipseMode(CENTER)
+      fill("green")
+      // fill(random(0,255),random(0,255),random(0,255),random(0,255))
+      ellipse(width/2,height/2,max(width,height)*1.5-((nextAnimationSequence.count-nextAnimationSequence.stages[0]-nextAnimationSequence.stages[1])*max(width,height)/nextAnimationSequence.stages[2])*1.5)
+      pop()
+    }
+  }
+}
+
+function nextButton(){
+  push()
+  translate(nextBtn.x,nextBtn.y)
+  rectMode(CENTER)
+  fill("black")
+  strokeWeight(10)
+  stroke("white")
+  if(nextBtn.hover){
+    nextBtn.sizev=max(0.05,nextBtn.sizev);
+    scale(nextBtn.size,nextBtn.size);
+  }else{
+    nextBtn.sizev=min(0.01,nextBtn.sizev)
+    scale(nextBtn.size,nextBtn.size)
+  }
+  rect(0,0,nextBtn.sizeX,nextBtn.sizeY,5)
+  textAlign(CENTER)
+  textSize(50)
+  fill("white")
+  noStroke()
+  rotate(cos(frameCount*2)*5)
+  text("NEXT",0,12,nextBtn.sizeX,nextBtn.sizeY)
+  pop()
+  nextBtn.work()
+  if(nextBtn.clicked){
+     nextAnimationSequence.running=true
+    nextAnimationSequence.count+=1
+  }
+}
+
 class animation{
   constructor(a){
     this.stages=a
     this.count=0
     this.currentStage=0
+    this.totalCount=0
+    this.running=false
   }
   work(){
-    var totalCount=0
-    for(var i=0;i<stages.length;i++){
-      totalCount+=stages[i]
-      if(this.count<=totalCount){
+    if(this.running){
+      // print(this.count)
+      this.currentStage=undefined
+      for(var i=0;i<this.stages.length;i++){
+      this.totalCount+=this.stages[i]
+      if(this.count<this.totalCount && this.currentStage==undefined){
         this.currentStage=i
       }
+      
+      if(this.currentStage==this.stages.length-1 && this.count==this.totalCount-1){
+        this.running=false
+        this.count=0
+        this.currentStage=0
+        this.totalCount=0
+      }
     }
+    }
+    this.totalCount=0 
   }
 }
 
@@ -44,8 +127,16 @@ class object{
     imageMode(CENTER)
     // image("molecule",this.x,this.y,this.sizeX,this.sizeY)
     ellipseMode(CENTER)
-    fill("white")
-    stroke("black")
+    // fill("white")
+    // stroke("black")
+    if(this.particleColor=="random"){
+      fill(random(0,255),random(0,255),random(0,255))
+    }else if(this.particleColor==[]){
+      fill("white")
+    }else{
+      fill(this.particleColor[0],this.particleColor[1],this.particleColor[2])
+    }
+    
     ellipse(this.x,this.y,this.sizeX,this.sizeY)
     pop()
   }
