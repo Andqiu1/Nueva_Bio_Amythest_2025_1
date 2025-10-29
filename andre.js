@@ -322,6 +322,12 @@ function updateNADH() {
           etcState.proteinComplexes[0].active = true;
           etcState.electronCount++;
           
+          // Deactivate after a short time
+          setTimeout(() => {
+            etcState.proteinComplexes[0].active = false;
+          }, 500);
+
+          
           // Create protons
           for (let j = 0; j < 2; j++) {
             setTimeout(() => {
@@ -401,6 +407,12 @@ function updateFADH2() {
           
           etcState.proteinComplexes[1].active = true;
           etcState.electronCount++;
+          
+          // Deactivate after a short time
+          setTimeout(() => {
+            etcState.proteinComplexes[1].active = false;
+          }, 500);
+
         }
         
         if (!fadh.hasElectrons) {
