@@ -1,19 +1,49 @@
-let zoetextShown = "hello!";
+let zoeTextNum = 0;
+let zoetextShown = "";
+let zoeTextShowingOnScreen = true;
+let zoeTextBoxNumber = 1;
+let zoeIntro
 
-function zoeTextbox(text) {
-  let zoeTextNum = 0;
-  console.log(zoeTextNum);
+class zoeTextBox {
+  constructor(lines, requiredAction) {
+    this.lines = lines;
+    this.currentIndex = 0;
+    this.visible = true;
+    this.requiredAction = requiredAction;
+  }
 
-  if (zoeTextNum < text.length) {
-    if (keyIsPressed == true && key == " ") {
-      colsole.log("space key pressed!");
-      zoeTextNum += 1;
+  draw() {
+    if (this.visible == true) {
+      fill(0, 0, 0, 50);
+      stroke(255, 255, 255);
+      rect(10, 10, 780, 100, 10);
+
+      textSize(20);
+      fill(255, 255, 255);
+      text(this.lines[this.currentIndex], 20, 30);
     }
-    zoetextShown = text[zoeTextNum];
-  } else {
-    zoetextShown = "";
+  }
+
+  nextLine() {
+    if (this.currentIndex < this.lines.length - 1) {
+      this.currentIndex++;
+    } else {
+      this.visible = false;
+    }
   }
 }
+
+// function zoeTextbox(text) {
+//   if (zoeTextNum > text.length) {
+//     zoetextShown = "";
+//     zoeTextShowingOnScreen = false;
+//     // zoeTextBoxNumber += 1;
+//     zoeTextNum = 0;
+//   }
+//   zoetextShown = text[zoeTextNum];
+
+//   // console.log(zoeTextBoxNumber)
+// }
 
 function zoeSetup() {
   // Draw the phospholipids
@@ -63,10 +93,29 @@ function zoeSetup() {
     255,
     0,
   ]);
-  zoeTextbox(["hello!", "welcome to the light dependent reaction!"]);
+  
+  
+  zoeIntro = new zoeTextBox([
+    "WELCOME USER\n:)",
+    "This is the first stage of photosynthesis, the light dependent reactions!",
+    "In the light dependent reactions, photons from the sunlight energy are taken in by organelles\n in the plant's cells called chloroplasts. The reactants, or inputs, of the reaction is sunlight,\n and the products, or outputs, of the reaction are oxygen in the form of O2, NADPH, which is \nan electron carrier, and ATP, an energy currency for the plant.","Photons from the sun come and hit the photosystems, which excites electrons. Those electrons\n then go through an electron transport chain, using energy to pump hydrogen ions against their\n gradient. After that, the electrons go in NADP+ with H+, which makes NADPH. The H+ ions \ngo through the ATP synthase, which rotates and uses that energy to make ATP."
+  ],"space");
+  // let textboxzoeTextbox([":) :) :) :) :)", ":O :O :O :O :O :O", ":D :D :D :D :D"])
+ 
+  
+  
 }
 
 function zoe() {
-  fill(255, 255, 255);
-  text(zoetextShown, 30, 30);
+   zoeIntro.draw()
+  
+}
+
+function keyPressed() {
+  if (key == " ") {
+    console.log("space key pressed!");
+    // zoeTextNum += 1;
+    // console.log(zoeTextNum);
+    zoeIntro.nextLine();
+  }
 }
