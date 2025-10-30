@@ -159,7 +159,7 @@ function drawCompartments() {
   noStroke();
   rect(0, 0, width, etcState.intermembraneY + 50);
   
-  fill(255, 200);
+  fill(255);
   textSize(16);
   textAlign(LEFT);
   text("Intermembrane Space", 20, 30);
@@ -172,7 +172,7 @@ function drawCompartments() {
   noStroke();
   rect(0, etcState.matrixY - 80, width, height);
   
-  fill(255, 200);
+  fill(255);
   textSize(16);
   textAlign(LEFT);
   text("Mitochondrial Matrix", 20, etcState.matrixY - 50);
@@ -191,10 +191,10 @@ function drawMembrane() {
     ellipse(random(width), etcState.membraneY + random(-40, 40), random(5, 15));
   }
   
-  fill(255, 200);
+  fill(255);
   textSize(14);
-  textAlign(CENTER);
-  text("Inner Mitochondrial Membrane", width/2, etcState.membraneY - 60);
+  textAlign(CENTER, CENTER);
+  text("Inner Mitochondrial Membrane", width/8, etcState.membraneY);
   pop();
 }
 
@@ -260,8 +260,8 @@ function drawATPSynthase() {
   fill(255);
   noStroke();
   textSize(12);
-  textAlign(CENTER);
-  text("ATP Synthase", synthase.x, synthase.y + synthase.height/2 + 15);
+  textAlign(CENTER, CENTER);
+  text("ATP\nSynthase", synthase.x-70, synthase.y );
   pop();
 }
 
@@ -577,8 +577,8 @@ function updateProtons() {
           let d = sqrt(dx*dx + dy*dy);
           
           // Repel if too close
-          if (d < 30 && d > 0) {
-            let force = (30 - d) / 30 * 6;
+          if (d < 120 && d > 0) {
+            let force = sqrt((120 - d)*(120 - d))/120 * 5;
             proton.x += (dx / d) * force;
             proton.y += (dy / d) * force;
           }
@@ -611,8 +611,8 @@ function updateProtons() {
         let d = sqrt(dx*dx + dy*dy);
         
         // Increased attraction range and speed - overrides repulsion when close
-        if (d < 500) {
-          let attractForce = 0.6 * max(0.2, sqrt((250000 - (d*d)))/500); // Stronger attraction
+        if (d < 700) {
+          let attractForce = 0.6 * max(0.5, sqrt((490000 - (d*d)))/700); // Stronger attraction
           let attractX = dx / d * attractForce;
           let attractY = dy / d * attractForce;
           
