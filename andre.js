@@ -157,7 +157,7 @@ function drawCompartments() {
   push();
   fill(100, 150, 200, 30);
   noStroke();
-  rect(0, 0, width, etcState.intermembraneY + 50);
+  rect(0, 0, width, etcState.membraneY - 50);
   
   fill(255);
   textSize(16);
@@ -170,12 +170,12 @@ function drawCompartments() {
   push();
   fill(150, 100, 150, 30);
   noStroke();
-  rect(0, etcState.matrixY - 80, width, height);
+  rect(0, etcState.membraneY + 50, width, height);
   
   fill(255);
   textSize(16);
   textAlign(LEFT);
-  text("Mitochondrial Matrix", 20, etcState.matrixY - 50);
+  text("Mitochondrial Matrix", 20, etcState.membraneY + 100);
   pop();
 }
 
@@ -599,8 +599,8 @@ function updateProtons() {
         proton.y = margin;
         proton.floatY = abs(proton.floatY);
       }
-      if (proton.y > etcState.intermembraneY + 50) {
-        proton.y = etcState.intermembraneY + 50;
+      if (proton.y > etcState.membraneY - 50) {
+        proton.y = etcState.membraneY - 50;
         proton.floatY = -abs(proton.floatY);
       }
       
@@ -621,7 +621,7 @@ function updateProtons() {
           proton.y += attractY;
           
           // Much larger capture radius
-          if (d < height/10) {
+          if (d < height/20) {
             // Proton goes through ATP Synthase
             proton.y = etcState.matrixY - 80;
             proton.pumped = false;
@@ -671,8 +671,8 @@ function updateOxygen() {
       oxy.y += oxy.vy;
       
       // Boundary check
-      if (oxy.x < 50 || oxy.x > width - 50) oxy.vx *= -1;
-      if (oxy.y < etcState.matrixY - 50 || oxy.y > height - 50) oxy.vy *= -1;
+      if (oxy.x < 0 || oxy.x > width) oxy.vx *= -1;
+      if (oxy.y < etcState.membraneY + 50 || oxy.y > height) oxy.vy *= -1;
     }
   }
 }
