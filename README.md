@@ -216,3 +216,5 @@ Stretch
 Chemiosmosis
 Explanation of oxidative phosphorylation
 The names of any of the proteins in the ETC
+
+Credit to HF_ang for some code and debug help!
