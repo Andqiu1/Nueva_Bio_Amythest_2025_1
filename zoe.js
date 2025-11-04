@@ -173,13 +173,13 @@ function zoeSetup() {
   zoeInstructions2 = new zoeTextBox(["Then, the light energy from the photon excites an electron from a chlorophyll molecule, or a\n green pigment inside the photosystem. (Space to continue)","When the electron in the chlorophyll gets excited, it jumps up a level in the chlorophyll\n molecule.","Usually, the electron would go back to its original state and release the energy gained, but\n in the thylakoid membrane, there is a series of proteins that carry the electron in a system \ncalled an electron transport chain."],"space")
   zoeTextboxes.push(zoeInstructions2)
 
-  zoeInstructions3 = new zoeTextBox(["The electrons go from the chlorophyll molecule through a series of complex proteins. One of\n those proteins is the channel protein."],"electron collides with protein")
+  zoeInstructions3 = new zoeTextBox(["The electrons go from the chlorophyll molecule through a series of complex proteins that carry the electron and pump Hydrogen ions."],"electron collides with protein")
   zoeTextboxes.push(zoeInstructions3)
   
-  zoeInstructions4 = new zoeTextBox(["The energy from the excited electron gets used to pump H+ into the lumen against its \nconcentration gradient.","H+ collides with lumen"])
+  zoeInstructions4 = new zoeTextBox(["The energy from the excited electron gets used to pump H+ into the lumen against its \nconcentration gradient using a .","H+ collides with lumen"])
   zoeTextboxes.push(zoeInstructions4)
   
-  zoeInstructions5 = new zoeTextBox(["Water then comes in from the roots of the plants and travels to the leaves using a xylem inside\n the plant's stem.","Water collides with PSII"])
+  zoeInstructions5 = new zoeTextBox(["Water then comes in from the roots of the plants and travels to the leaves using a xylem inside\n the plant's stem. The water goes to PSII."], "Water collides with PSII")
   zoeTextboxes.push(zoeInstructions5)
   
   zoeInstructions6 = new zoeTextBox(["The water gets split by a water-splitting section in the photosystem into one electron, one \noxygen, and 2 hydrogens."],"space")
@@ -194,7 +194,11 @@ function zoeSetup() {
   zoeInstructions9 = new zoeTextBox(["The electron goes to replace the lost electron in the chlorophyll."],"space")
   zoeTextboxes.push(zoeInstructions9)
   
+  zoeInstructions10 = new zoeTextBox(["Then, the H+ ions naturally diffuse through the ATP Synthase, because of their concentration\n gradient."],"H+ ions go to ATP synthase")
+  zoeTextboxes.push(zoeInstructions10)
   
+  zoeInstructions11 = new zoeTextBox(["The ATP Synthase rotates, generating power to make ADP into ATP."],"")
+  zoeTextboxes.push(zoeInstructions11)
 }
   
 
@@ -262,6 +266,7 @@ function zoe() {
   } else if (zoeSceneIAmInevitable == 6) {
     zoeInstructions5.draw()
     zoeWater.working = true
+    zoeH.draggable = false
     
     for (j = 0;j<objects.length;j++) {
       if (objects[j].type == "PSII") {
@@ -298,9 +303,24 @@ function zoe() {
     zoeElectron.working = true
     zoeElectronFromWater.working = false
     zoeInstructions9.draw()
+    nextButtonWork()
+    nextBtn.work()
     
-  }
+  } else if (zoeSceneIAmInevitable == 11) {
+    
+    zoeInstructions10.draw()
+    zoeH.draggable = true
+
+    
+    for (j = 0;j<objects.length;j++) {
+      if (objects[j].type == "ATPSynthase1") {
+        if (zoeDetectCollision(objects[j],zoeH) == objects[j] + zoeH) {
+          zoeInstructions11.nextLine()
+        }
+      }
+    }
   
+  }
    
    
   
