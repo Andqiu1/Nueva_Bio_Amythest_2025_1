@@ -21,7 +21,59 @@ var etcState = {
   atpCount: 0,
   electronCount: 0,
   timeCounter: 0,
-  paused: false
+  paused: false,
+  selectedElement: null,
+  selectedSubtab: null
+};
+
+// Information database for all elements
+var elementInfo = {
+  complex1: {
+    name: "Complex I (NADH Dehydrogenase)",
+    description: "Complex I is the first and largest protein complex in the electron transport chain. It accepts electrons from NADH and pumps 4 H+ ions across the inner mitochondrial membrane into the intermembrane space. This creates part of the proton gradient used to produce ATP."
+  },
+  complex2: {
+    name: "Complex II (Succinate Dehydrogenase)",
+    description: "Complex II accepts electrons from FADH2, which is produced during the Krebs cycle. Unlike other complexes, Complex II does not pump protons across the membrane, but it still plays a crucial role in transferring electrons to the electron transport chain."
+  },
+  complex3: {
+    name: "Complex III (Cytochrome bc1 Complex)",
+    description: "Complex III receives electrons from Coenzyme Q and transfers them to Cytochrome C. During this process, it pumps 4 H+ ions across the membrane, contributing to the proton gradient. This complex uses the Q-cycle mechanism for electron transfer."
+  },
+  complex4: {
+    name: "Complex IV (Cytochrome C Oxidase)",
+    description: "Complex IV is the final complex in the electron transport chain. It transfers electrons to oxygen (O2), the final electron acceptor, forming water (H2O). It also pumps 2 H+ ions across the membrane. Without oxygen, the entire electron transport chain stops."
+  },
+  atpSynthase: {
+    name: "ATP Synthase",
+    description: "ATP Synthase is a molecular machine that produces ATP using the energy stored in the proton gradient. As H+ ions flow back through ATP Synthase from the intermembrane space to the matrix, the enzyme rotates and catalyzes the synthesis of ATP from ADP and inorganic phosphate."
+  },
+  intermembrane: {
+    name: "Intermembrane Space",
+    description: "The intermembrane space is the region between the inner and outer mitochondrial membranes. During the electron transport chain, H+ ions accumulate here, creating a high concentration gradient. This electrochemical gradient stores potential energy that drives ATP synthesis."
+  },
+  matrix: {
+    name: "Mitochondrial Matrix",
+    description: "The mitochondrial matrix is the innermost compartment of the mitochondrion. It contains enzymes for the Krebs cycle and is where NADH and FADH2 are produced. The matrix has a lower H+ concentration than the intermembrane space, creating the gradient needed for ATP synthesis.",
+    subtabs: {
+      nadh: {
+        name: "NADH (Nicotinamide Adenine Dinucleotide)",
+        description: "NADH is an electron carrier produced during glycolysis and the Krebs cycle. It carries high-energy electrons to Complex I, where it becomes NAD+. Each NADH can contribute to the production of approximately 2.5 ATP molecules through oxidative phosphorylation."
+      },
+      fadh2: {
+        name: "FADH₂ (Flavin Adenine Dinucleotide)",
+        description: "FADH₂ is another electron carrier produced during the Krebs cycle. It delivers electrons to Complex II, entering the electron transport chain at a later point than NADH. Each FADH2 contributes to approximately 1.5 ATP molecules."
+      },
+      oxygen: {
+        name: "Oxygen (O₂)",
+        description: "Oxygen is the final electron acceptor in the electron transport chain. It combines with electrons and H+ ions to form water (H₂O). Oxygen's high electronegativity makes it an excellent electron acceptor, which is why aerobic respiration is so efficient."
+      },
+      water: {
+        name: "Water (H₂O)",
+        description: "Water is the byproduct formed when oxygen accepts electrons at Complex IV. Each oxygen molecule combines with 4 electrons and 4 H+ ions to produce 2 water molecules. This is the water you exhale with each breath during cellular respiration."
+      }
+    }
+  }
 };
 
 function initializeETC() {
@@ -84,69 +136,83 @@ function andre() {
   
   etcState.timeCounter++;
   
-  // Draw membrane
-  drawMembrane();
-  
-  // Draw protein complexes
-  drawProteinComplexes();
-  
-  // Draw ATP Synthase
-  drawATPSynthase();
-  
-  // Update and draw all molecules
-  updateNADH();
-  updateFADH2();
-  updateElectrons();
-  updateProtons();
-  updateOxygen();
-  updateWater();
-  updateATP();
-  
-  // Auto-generate NADH/FADH2 periodically
-  if (!etcState.paused && etcState.timeCounter % 180 == 0) {
-    if (etcState.nadh.length < 5) {
-      etcState.nadh.push({
-        x: 50,
-        y: etcState.matrixY + random(-30, 30),
-        size: 30,
-        hasElectrons: true,
-        moving: false,
-        targetComplex: 0
-      });
+  // Draw info panel if element is selected
+  if (etcState.selectedElement) {
+    drawElementInfo();
+  } else {
+    // Normal simulation view
+    // Check for clicks on interactive elements (only in main screen)
+    if (mouseClick) {
+      handleElementClicks();
     }
-  }
-  
-  if (!etcState.paused && etcState.timeCounter % 300 == 0) {
-    if (etcState.fadh2.length < 3) {
-      etcState.fadh2.push({
-        x: 50,
-        y: etcState.matrixY + 50,
-        size: 30,
-        hasElectrons: true,
-        moving: false,
-        targetComplex: 1
-      });
+    
+    // Draw membrane
+    drawMembrane();
+    
+    // Draw protein complexes
+    drawProteinComplexes();
+    
+    // Draw ATP Synthase
+    drawATPSynthase();
+    
+    // Update and draw all molecules
+    updateNADH();
+    updateFADH2();
+    updateElectrons();
+    updateProtons();
+    updateOxygen();
+    updateWater();
+    updateATP();
+    
+    // Auto-generate NADH/FADH2 periodically
+    if (!etcState.paused && etcState.timeCounter % 180 == 0) {
+      if (etcState.nadh.length < 5) {
+        etcState.nadh.push({
+          x: 50,
+          y: etcState.matrixY + random(-30, 30),
+          size: 30,
+          hasElectrons: true,
+          moving: false,
+          targetComplex: 0
+        });
+      }
     }
-  }
-  
-  // Auto-add oxygen - much more frequently
-  if (!etcState.paused/* && etcState.timeCounter % 15 == 0*/) {
-    if (etcState.oxygenMolecules.length < 20) {
-      etcState.oxygenMolecules.push({
-        x: etcState.proteinComplexes[3].x + random(80, 150),
-        y: etcState.matrixY + random(-40, 40),
-        size: 25,
-        vx: random(-0.5, 0.5),
-        vy: random(-0.5, 0.5)
-      });
+    
+    if (!etcState.paused && etcState.timeCounter % 300 == 0) {
+      if (etcState.fadh2.length < 3) {
+        etcState.fadh2.push({
+          x: 50,
+          y: etcState.matrixY + 50,
+          size: 30,
+          hasElectrons: true,
+          moving: false,
+          targetComplex: 1
+        });
+      }
     }
+    
+    // Auto-add oxygen - much more frequently
+    if (!etcState.paused/* && etcState.timeCounter % 15 == 0*/) {
+      if (etcState.oxygenMolecules.length < 20) {
+        etcState.oxygenMolecules.push({
+          x: etcState.proteinComplexes[3].x + random(80, 150),
+          y: etcState.matrixY + random(-40, 40),
+          size: 25,
+          vx: random(-0.5, 0.5),
+          vy: random(-0.5, 0.5)
+        });
+      }
+    }
+    
+    // Draw compartment labels and backgrounds
+    drawCompartments();
+    // Draw UI elements
+    drawInfoPanel();
+    drawControls();
+    
+    // Draw clickable hotspots (only in main screen)
+    drawClickableRegions();
   }
-  
-  // Draw compartment labels and backgrounds
-  drawCompartments();
-  // Draw UI elements
-  drawInfoPanel();
-  drawControls();
 }
 
 function drawCompartments() {
@@ -730,21 +796,196 @@ function drawInfoPanel() {
 }
 
 function drawControls() {
-  push();
-  fill(0, 0, 0, 180);
-  noStroke();
-  rect(width - 210, height - 80, 200, 70, 10);
+  // Draw next button instead of pause button
+  nextButton();
+}
+
+function handleElementClicks() {
+  // Check complexes
+  for (let i = 0; i < etcState.proteinComplexes.length; i++) {
+    let complex = etcState.proteinComplexes[i];
+    if (mouseX > complex.x - complex.width/2 && mouseX < complex.x + complex.width/2 &&
+        mouseY > complex.y - complex.height/2 && mouseY < complex.y + complex.height/2) {
+      etcState.selectedElement = 'complex' + complex.type;
+      etcState.selectedSubtab = null;
+      return;
+    }
+  }
   
-  fill(255);
-  textSize(12);
-  textAlign(LEFT);
-  text("Click to " + (etcState.paused ? "Resume" : "Pause"), width - 200, height - 55);
-  text("Oxygen enters automatically", width - 200, height - 35);
+  // Check ATP Synthase
+  let synthase = etcState.atpSynthase;
+  if (mouseX > synthase.x - synthase.width && mouseX < synthase.x + synthase.width &&
+      mouseY > synthase.y - synthase.height/2 && mouseY < synthase.y + synthase.height/2) {
+    etcState.selectedElement = 'atpSynthase';
+    etcState.selectedSubtab = null;
+    return;
+  }
+  
+  // Check intermembrane space
+  if (mouseY < etcState.membraneY - 50) {
+    etcState.selectedElement = 'intermembrane';
+    etcState.selectedSubtab = null;
+    return;
+  }
+  
+  // Check mitochondrial matrix
+  if (mouseY > etcState.membraneY + 50) {
+    etcState.selectedElement = 'matrix';
+    etcState.selectedSubtab = 'nadh';
+    return;
+  }
+}
+
+function drawClickableRegions() {
+  push();
+  // Draw subtle hover indicators on complexes
+  for (let i = 0; i < etcState.proteinComplexes.length; i++) {
+    let complex = etcState.proteinComplexes[i];
+    if (mouseX > complex.x - complex.width/2 && mouseX < complex.x + complex.width/2 &&
+        mouseY > complex.y - complex.height/2 && mouseY < complex.y + complex.height/2) {
+      noFill();
+      stroke(255, 255, 0, 150);
+      strokeWeight(3);
+      rect(complex.x - complex.width/2 - 5, complex.y - complex.height/2 - 5, 
+           complex.width + 10, complex.height + 10, 12);
+    }
+  }
+  
+  // ATP Synthase hover
+  let synthase = etcState.atpSynthase;
+  if (mouseX > synthase.x - synthase.width && mouseX < synthase.x + synthase.width &&
+      mouseY > synthase.y - synthase.height/2 && mouseY < synthase.y + synthase.height/2) {
+    noFill();
+    stroke(255, 255, 0, 150);
+    strokeWeight(3);
+    rect(synthase.x - synthase.width - 5, synthase.y - synthase.height/2 - 5,
+         synthase.width * 2 + 10, synthase.height + 10, 12);
+  }
+  pop();
+}
+
+function drawElementInfo() {
+  // Dim background
+  push();
+  fill(0, 0, 0, 200);
+  noStroke();
+  rect(0, 0, width, height);
   pop();
   
-  // Pause button
-  if (mouseIsPressed && mouseX > width - 210 && mouseX < width - 10 && 
-      mouseY > height - 80 && mouseY < height - 10) {
-    etcState.paused = !etcState.paused;
+  let info = elementInfo[etcState.selectedElement];
+  
+  // Left panel - Enlarged image
+  push();
+  fill(40, 40, 50);
+  stroke(100, 150, 200);
+  strokeWeight(3);
+  rect(50, 100, 350, 500, 15);
+  
+  imageMode(CENTER);
+  let imgX = 225;
+  let imgY = 350;
+  
+  // Draw appropriate enlarged image
+  if (etcState.selectedElement === 'complex1') {
+    image(ComplexOne, imgX, imgY, 200, 250);
+  } else if (etcState.selectedElement === 'complex2') {
+    image(ComplexTwo, imgX, imgY, 200, 250);
+  } else if (etcState.selectedElement === 'complex3') {
+    image(ComplexThree, imgX, imgY, 200, 250);
+  } else if (etcState.selectedElement === 'complex4') {
+    image(ComplexFour, imgX, imgY, 200, 250);
+  } else if (etcState.selectedElement === 'atpSynthase') {
+    image(ATPSynthase1, imgX, imgY, 150, 300);
+  } else if (etcState.selectedElement === 'matrix') {
+    // Draw subtab images
+    if (etcState.selectedSubtab === 'nadh') {
+      image(NADPH, imgX, imgY, 200, 200);
+    } else if (etcState.selectedSubtab === 'fadh2') {
+      image(FADH, imgX, imgY, 200, 200);
+    } else if (etcState.selectedSubtab === 'oxygen') {
+      image(OTwo, imgX, imgY, 200, 200);
+    } else if (etcState.selectedSubtab === 'water') {
+      image(HTwoO, imgX, imgY, 200, 200);
+    }
+  } else if (etcState.selectedElement === 'intermembrane') {
+    image(H, imgX, imgY, 150, 150);
   }
+  
+  fill(255);
+  textSize(20);
+  textAlign(CENTER);
+  text(etcState.selectedElement === 'matrix' ? 
+       info.subtabs[etcState.selectedSubtab].name : info.name, 
+       225, 150);
+  pop();
+  
+  // Right panel - Description
+  push();
+  fill(40, 40, 50);
+  stroke(100, 150, 200);
+  strokeWeight(3);
+  rect(420, 100, 330, 500, 15);
+  
+  fill(255);
+  textSize(14);
+  textAlign(LEFT, TOP);
+  let desc = etcState.selectedElement === 'matrix' ? 
+             info.subtabs[etcState.selectedSubtab].description : 
+             info.description;
+  text(desc, 440, 130, 290, 400);
+  
+  // Draw subtabs for matrix
+  if (etcState.selectedElement === 'matrix') {
+    let subtabs = ['nadh', 'fadh2', 'oxygen', 'water'];
+    let subtabNames = ['NADH', 'FADH2', 'O2', 'H2O'];
+    let tabY = 520;
+    
+    for (let i = 0; i < subtabs.length; i++) {
+      let tabX = 440 + i * 72;
+      
+      if (etcState.selectedSubtab === subtabs[i]) {
+        fill(100, 150, 200);
+      } else {
+        fill(60, 60, 70);
+      }
+      
+      stroke(150);
+      strokeWeight(2);
+      rect(tabX, tabY, 65, 35, 5);
+      
+      fill(255);
+      noStroke();
+      textSize(11);
+      textAlign(CENTER, CENTER);
+      text(subtabNames[i], tabX + 32, tabY + 17);
+      
+      // Check for clicks on subtabs
+      if (mouseClick && mouseX > tabX && mouseX < tabX + 65 &&
+          mouseY > tabY && mouseY < tabY + 35) {
+        etcState.selectedSubtab = subtabs[i];
+      }
+    }
+  }
+  pop();
+  
+  // Close button
+  push();
+  fill(200, 50, 50);
+  stroke(255);
+  strokeWeight(2);
+  rect(width - 100, 50, 70, 40, 8);
+  
+  fill(255);
+  noStroke();
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Close", width - 65, 70);
+  
+  // Check for close button click
+  if (mouseClick && mouseX > width - 100 && mouseX < width - 30 &&
+      mouseY > 50 && mouseY < 90) {
+    etcState.selectedElement = null;
+    etcState.selectedSubtab = null;
+  }
+  pop();
 }
