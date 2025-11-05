@@ -170,9 +170,9 @@ function drawCompartments() {
   rect(0, etcState.membraneY + 50, width, height);
   
   fill(255);
-  textSize(16);
+  textSize(15);
   textAlign(LEFT);
-  text("Mitochondrial Matrix", 20, etcState.membraneY + 100);
+  text("Mitochondrial Matrix", 20, etcState.membraneY + 80);
   pop();
 }
 
@@ -215,12 +215,13 @@ function drawMembrane() {
   // Label
   fill(0, 0, 0, 150);
   noStroke();
-  rect(10, etcState.membraneY - 75, 320, 30, 5);
+  //rect(10, etcState.membraneY - 75, 320, 30, 5);
   
   fill(255, 240);
   textSize(14);
   textAlign(LEFT, CENTER);
-  text("Inner Mitochondrial Membrane", 20, etcState.membraneY - 60);
+  textSize(15);
+  text("Inner Mitochondrial Membrane", 15, etcState.membraneY);
   pop();
 }
 
@@ -272,17 +273,12 @@ function drawATPSynthase() {
   translate(synthase.x, synthase.y);
   imageMode(CENTER);
   
-  // Draw base (always ATPSynthase1)
-  image(ATPSynthase1, 0, 0, synthase.width * 1.5, synthase.height);
-  
-  // Cycle between synthase1 and synthase2 based on rotation
-  // Every 180 degrees (half rotation), switch images
-  let rotationCycle = Math.floor((synthase.rotation % 360) / 180);
-  
+  let rotationCycle = (synthase.rotation/30);
+  //console.log(rotationCycle);
   if (rotationCycle % 2 === 0) {
-    image(ATPSynthase2, 0, -10, 55, 55);
+    image(ATPSynthase1, 0, 0, synthase.width * 1.5, synthase.height);
   } else {
-    image(ATPSynthase1, 0, -10, 55, 55);
+    image(ATPSynthase2, 0, 0, synthase.width * 1.5, synthase.height);
   }
   
   pop();
@@ -581,8 +577,8 @@ function updateProtons() {
           let d = sqrt(dx*dx + dy*dy);
           
           // Repel if too close
-          if (d < 120 && d > 0) {
-            let force = sqrt((120 - d)*(120 - d))/120 * 5;
+          if (d < 180 && d > 0) {
+            let force = sqrt((180 - d)*(180 - d))/180 * 5;
             proton.x += (dx / d) * force;
             proton.y += (dy / d) * force;
           }
