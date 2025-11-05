@@ -633,7 +633,10 @@ function updateProtons() {
     if (proton.pumped) {
       proton.x += proton.floatX;
       proton.y += proton.floatY;
-      
+
+      // Apply downward force to all protons
+      proton.y += 0.3;
+
       // Proton-proton repulsion
       for (let j = 0; j < etcState.protons.length; j++) {
         if (i !== j && etcState.protons[j].pumped) {
@@ -641,7 +644,7 @@ function updateProtons() {
           let dx = proton.x - other.x;
           let dy = proton.y - other.y;
           let d = sqrt(dx*dx + dy*dy);
-          
+
           // Repel if too close
           if (d < 180 && d > 0) {
             let force = sqrt((180 - d)*(180 - d))/180 * 5;
