@@ -937,7 +937,7 @@ function drawElementInfo() {
   // Draw subtabs for matrix
   if (etcState.selectedElement === 'matrix') {
     let subtabs = ['nadh', 'fadh2', 'oxygen', 'water'];
-    let subtabNames = ['NADH', 'FADH2', 'O2', 'H2O'];
+    let subtabNames = ['NADH', 'FADH₂', 'O₂', 'H₂O'];
     let tabY = 520;
     
     for (let i = 0; i < subtabs.length; i++) {
