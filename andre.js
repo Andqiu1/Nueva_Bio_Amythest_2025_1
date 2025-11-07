@@ -37,47 +37,59 @@ var etcState = {
 var elementInfo = {
   complex1: {
     name: "Complex I (NADH Dehydrogenase)",
-    description: "Complex I is the first and largest protein complex in the electron transport chain. It accepts electrons from NADH and pumps 4 H+ ions across the inner mitochondrial membrane into the intermembrane space. This creates part of the proton gradient used to produce ATP."
+    description: "Complex I is the first and largest protein complex in the electron transport chain. It accepts electrons from NADH (which becomes NAD+) and pumps 4 H+ ions (protons) across the inner mitochondrial membrane into the intermembrane space through active transport. This creates part of the electrochemical gradient used to produce ATP through chemiosmosis."
   },
   complex2: {
     name: "Complex II (Succinate Dehydrogenase)",
-    description: "Complex II accepts electrons from FADH2, which is produced during the Krebs cycle. Unlike other complexes, Complex II does not pump protons across the membrane, but it still plays a crucial role in transferring electrons to the electron transport chain."
+    description: "Complex II is a protein complex that accepts electrons from FADH2 (which becomes FAD) produced during the Krebs cycle. Unlike other complexes, Complex II does not pump protons across the membrane, but it still plays a crucial role in transferring electrons (e-) to Coenzyme Q in the electron transport chain."
   },
   complex3: {
     name: "Complex III (Cytochrome bc1 Complex)",
-    description: "Complex III receives electrons from Coenzyme Q and transfers them to Cytochrome C. During this process, it pumps 4 H+ ions across the membrane, contributing to the proton gradient. This complex uses the Q-cycle mechanism for electron transfer."
+    description: "Complex III is a protein complex that receives electrons from Coenzyme Q and transfers them to Cytochrome C. During this process, it uses active transport to pump 4 H+ ions (protons) across the inner mitochondrial membrane, contributing to the electrochemical gradient. This complex uses the Q-cycle mechanism for electron transfer."
   },
   complex4: {
     name: "Complex IV (Cytochrome C Oxidase)",
-    description: "Complex IV is the final complex in the electron transport chain. It transfers electrons to oxygen (O2), the final electron acceptor, forming water (H2O). It also pumps 2 H+ ions across the membrane. Without oxygen, the entire electron transport chain stops."
+    description: "Complex IV is the final protein complex in the electron transport chain. It transfers electrons (e-) to oxygen (O2), the final electron acceptor, forming water (H2O). It also pumps 2 H+ ions across the membrane through active transport. Without oxygen, the entire electron transport chain stops, which is why we need to breathe!"
   },
   atpSynthase: {
     name: "ATP Synthase",
-    description: "ATP Synthase is a molecular machine that produces ATP using the energy stored in the proton gradient. As H+ ions flow back through ATP Synthase from the intermembrane space to the matrix, the enzyme rotates and catalyzes the synthesis of ATP from ADP and inorganic phosphate."
+    description: "ATP Synthase is a protein complex and molecular machine that produces ATP through oxidative phosphorylation. As H+ ions (protons) flow back through ATP Synthase via facilitated diffusion from the intermembrane space to the mitochondrial matrix, the enzyme rotates and catalyzes: ADP + Pi → ATP. This process is called chemiosmosis."
   },
   intermembrane: {
     name: "Intermembrane Space",
-    description: "The intermembrane space is the region between the inner and outer mitochondrial membranes. During the electron transport chain, H+ ions accumulate here, creating a high concentration gradient. This electrochemical gradient stores potential energy that drives ATP synthesis."
+    description: "The intermembrane space is the region between the inner and outer membranes of the mitochondria. During the electron transport chain, H+ ions (protons) accumulate here through active transport, creating a high concentration. This electrochemical gradient (both electrical and chemical) stores potential energy that drives ATP synthesis."
   },
   matrix: {
     name: "Mitochondrial Matrix",
-    description: "The mitochondrial matrix is the innermost compartment of the mitochondrion. It contains enzymes for the Krebs cycle and is where NADH and FADH2 are produced. The matrix has a lower H+ concentration than the intermembrane space, creating the gradient needed for ATP synthesis.",
+    description: "The mitochondrial matrix is the innermost compartment of the mitochondrion (plural: mitochondria). It contains enzymes for the Krebs cycle and is where NADH and FADH2 are produced. The matrix has a lower H+ concentration than the intermembrane space, creating the electrochemical gradient needed for ATP synthesis through the inner mitochondrial membrane.",
     subtabs: {
       nadh: {
-        name: "NADH (Nicotinamide Adenine Dinucleotide)",
-        description: "NADH is an electron carrier produced during glycolysis and the Krebs cycle. It carries high-energy electrons to Complex I, where it becomes NAD+. Each NADH can contribute to the production of approximately 2.5 ATP molecules through oxidative phosphorylation."
+        name: "NADH / NAD+ (Electron Carrier)",
+        description: "NADH (reduced form) is an electron carrier produced during glycolysis and the Krebs cycle. It carries high-energy electrons (e-) to Complex I in the inner mitochondrial membrane, where it becomes NAD+ (oxidized form). Approximately 10 NADH molecules are used per glucose, contributing to ~25 ATP through oxidative phosphorylation."
       },
       fadh2: {
-        name: "FADH₂ (Flavin Adenine Dinucleotide)",
-        description: "FADH₂ is another electron carrier produced during the Krebs cycle. It delivers electrons to Complex II, entering the electron transport chain at a later point than NADH. Each FADH2 contributes to approximately 1.5 ATP molecules."
+        name: "FADH₂ / FAD (Electron Carrier)",
+        description: "FADH₂ (reduced form) is an electron carrier produced during the Krebs cycle. It delivers electrons (e-) to Complex II in the inner mitochondrial membrane, where it becomes FAD (oxidized form). Approximately 2 FADH2 molecules are used per glucose, entering the ETC later than NADH and contributing to ~3 ATP through oxidative phosphorylation."
       },
       oxygen: {
-        name: "Oxygen (O₂)",
-        description: "Oxygen is the final electron acceptor in the electron transport chain. It combines with electrons and H+ ions to form water (H₂O). Oxygen's high electronegativity makes it an excellent electron acceptor, which is why aerobic respiration is so efficient."
+        name: "Oxygen (O₂) - Final Electron Acceptor",
+        description: "Oxygen is the final electron acceptor in the electron transport chain. At Complex IV, O2 combines with electrons (e-) and H+ ions (protons) to form water (H₂O): O2 + 4e- + 4H+ → 2H2O. About 6 O2 molecules are used per glucose. Oxygen's high electronegativity makes it an excellent electron acceptor, which is why aerobic respiration is so efficient and why we need to breathe!"
       },
       water: {
-        name: "Water (H₂O)",
-        description: "Water is the byproduct formed when oxygen accepts electrons at Complex IV. Each oxygen molecule combines with 4 electrons and 4 H+ ions to produce 2 water molecules. This is the water you exhale with each breath during cellular respiration."
+        name: "Water (H₂O) - Product",
+        description: "Water is the byproduct formed when oxygen accepts electrons at Complex IV. The reaction is: O2 + 4e- + 4H+ → 2H2O. Approximately 6 water molecules are produced per glucose molecule during cellular respiration. This metabolic water is actually part of the water your body produces and is mixed with the water you exhale with each breath!"
+      },
+      atp: {
+        name: "ATP / ADP (Energy Currency)",
+        description: "ATP (adenosine triphosphate) is the cell's energy currency. It's produced when ADP (adenosine diphosphate) combines with inorganic phosphate (Pi) through oxidative phosphorylation at ATP Synthase: ADP + Pi → ATP. The ETC produces approximately 32-34 ATP per glucose molecule - the most of any cellular respiration stage!"
+      },
+      proteins: {
+        name: "Proteins in the ETC",
+        description: "Protein complexes in the inner mitochondrial membrane (Complexes I, II, III, IV, and ATP Synthase) facilitate electron transport and ATP production. These proteins use active transport to pump H+ ions and facilitated diffusion (at ATP Synthase) to harness the electrochemical gradient for chemiosmosis."
+      },
+      mitochondria: {
+        name: "Mitochondria - The Powerhouse",
+        description: "Mitochondria (singular: mitochondrion) are organelles known as the 'powerhouse of the cell.' They contain an outer membrane, inner mitochondrial membrane (where the ETC occurs), intermembrane space, and mitochondrial matrix. The ETC in mitochondria produces most of the cell's ATP through oxidative phosphorylation and chemiosmosis."
       }
     }
   }
@@ -126,35 +138,35 @@ function andreSetup() {
   andreTextboxes = [
     new andreTextBox(
       "Welcome to the Electron Transport Chain!",
-      "The Electron Transport Chain (ETC) is the final stage of cellular respiration.\nIt creates a proton gradient that powers ATP Synthase to produce ATP,\nthe cell's energy currency. Watch as electrons flow through the chain!"
+      "The ETC is the final stage of cellular respiration, occurring in the\nmitochondria. It uses electrons from NADH and FADH₂ to pump H⁺ ions,\ncreating an electrochemical gradient that powers ATP production."
     ),
     new andreTextBox(
-      "Complexes I & II: Electron Entry",
-      "NADH and FADH₂ (from earlier stages) deliver high-energy electrons\nto Complex I and Complex II. As electrons enter, Complex I pumps\n4 H⁺ ions into the intermembrane space."
+      "Inputs: NADH and FADH₂",
+      "NADH (10 molecules) and FADH₂ (2 molecules) from glycolysis and the Krebs\ncycle donate electrons to the ETC. NADH becomes NAD⁺ and FADH₂ becomes\nFAD after releasing electrons. O₂ (6 molecules) is also required!"
     ),
     new andreTextBox(
-      "Complex III: Electron Transfer",
-      "Electrons move through Coenzyme Q to Complex III, which transfers them\nto Cytochrome C. Complex III pumps 4 more H⁺ ions across the membrane,\nincreasing the proton gradient."
+      "Electron Flow & Active Transport",
+      "Electrons (e⁻) from NADH enter Complex I, while FADH₂ electrons enter\nComplex II. As electrons move through protein complexes in the inner\nmitochondrial membrane, H⁺ ions are actively transported into the intermembrane space."
     ),
     new andreTextBox(
-      "Complex IV: Final Electron Transfer",
-      "Complex IV receives electrons from Cytochrome C and transfers them\nto oxygen (O₂), the final electron acceptor. This forms water (H₂O)\nand pumps 2 more H⁺ ions."
+      "Building the Electrochemical Gradient",
+      "Complexes I, III, and IV pump H⁺ ions from the mitochondrial matrix to the\nintermembrane space, creating a concentration gradient. This electrochemical\ngradient stores potential energy through chemiosmosis."
     ),
     new andreTextBox(
-      "Proton Gradient Formation",
-      "As the complexes pump H⁺ ions into the intermembrane space,\na concentration gradient builds up. This gradient stores energy,\nlike water behind a dam, ready to power ATP synthesis."
+      "Why Oxygen is Essential",
+      "O₂ is the final electron acceptor at Complex IV. Without oxygen, electrons\nwould back up and the entire ETC would stop! When O₂ accepts electrons and\nH⁺, it forms H₂O (water) - producing about 6 H₂O molecules per glucose."
     ),
     new andreTextBox(
-      "ATP Synthase: The Molecular Motor",
-      "H⁺ ions flow back through ATP Synthase down their concentration gradient.\nThis flow rotates the enzyme, mechanically forcing ADP and phosphate (Pi)\ntogether to create ATP!"
+      "ATP Synthase: Facilitated Diffusion",
+      "H⁺ ions flow back through ATP Synthase via facilitated diffusion, moving\ndown their gradient. This rotates the enzyme, catalyzing oxidative\nphosphorylation: ADP + Pi → ATP (producing ~32-34 ATP per glucose!)."
     ),
     new andreTextBox(
-      "The Complete Electron Transport Chain",
-      "Watch the full cycle: NADH/FADH₂ deliver electrons → complexes pump H⁺\n→ electrons combine with O₂ to form H₂O → H⁺ flows through ATP Synthase\n→ ATP is produced. This is how cells generate energy!"
+      "Summary: Inputs → Outputs",
+      "INPUTS: 10 NADH, 2 FADH₂, 6 O₂, ~34 ADP + Pi\nOUTPUTS: 10 NAD⁺, 2 FAD, 6 H₂O, ~32-34 ATP\nThe ETC produces the MOST ATP of any cellular respiration stage!"
     ),
     new andreTextBox(
       "Tutorial Complete!",
-      "You can now explore the simulation freely.\nClick on any complex, ATP Synthase, or compartment to learn more about it.\nThe simulation runs continuously in the background!"
+      "Click on any complex, ATP Synthase, or compartment to learn more.\nExplore vocabulary like mitochondria, proteins, chemiosmosis, and more!"
     )
   ];
 
@@ -1210,6 +1222,19 @@ function drawElementInfo() {
       image(OTwo, imgX, imgY, 200, 200);
     } else if (etcState.selectedSubtab === 'water') {
       image(HTwoO, imgX, imgY, 200, 200);
+    } else if (etcState.selectedSubtab === 'atp') {
+      image(Atp, imgX, imgY, 250, 180);
+    } else if (etcState.selectedSubtab === 'proteins') {
+      image(ComplexOne, imgX, imgY, 200, 250);
+    } else if (etcState.selectedSubtab === 'mitochondria') {
+      // Draw a simple representation of mitochondria using shapes
+      fill(100, 60, 100);
+      ellipse(imgX, imgY, 250, 150);
+      fill(120, 80, 120);
+      ellipse(imgX, imgY, 200, 100);
+      fill(255);
+      textSize(16);
+      text("Mitochondrion", imgX, imgY + 100);
     }
   } else if (etcState.selectedElement === 'intermembrane') {
     image(H, imgX, imgY, 150, 150);
@@ -1240,29 +1265,33 @@ function drawElementInfo() {
   
   // Draw subtabs for matrix
   if (etcState.selectedElement === 'matrix') {
-    let subtabs = ['nadh', 'fadh2', 'oxygen', 'water'];
-    let subtabNames = ['NADH', 'FADH₂', 'O₂', 'H₂O'];
-    let tabY = 520;
-    
+    let subtabs = ['nadh', 'fadh2', 'oxygen', 'water', 'atp', 'proteins', 'mitochondria'];
+    let subtabNames = ['NADH', 'FADH₂', 'O₂', 'H₂O', 'ATP', 'Proteins', 'Mito.'];
+    let tabY1 = 470;
+    let tabY2 = 510;
+
     for (let i = 0; i < subtabs.length; i++) {
-      let tabX = 440 + i * 72;
-      
+      let row = Math.floor(i / 4);
+      let col = i % 4;
+      let tabX = 440 + col * 72;
+      let tabY = row === 0 ? tabY1 : tabY2;
+
       if (etcState.selectedSubtab === subtabs[i]) {
         fill(100, 150, 200);
       } else {
         fill(60, 60, 70);
       }
-      
+
       stroke(150);
       strokeWeight(2);
       rect(tabX, tabY, 65, 35, 5);
-      
+
       fill(255);
       noStroke();
-      textSize(11);
+      textSize(10);
       textAlign(CENTER, CENTER);
       text(subtabNames[i], tabX + 32, tabY + 17);
-      
+
       // Check for clicks on subtabs
       if (mouseClick && mouseX > tabX && mouseX < tabX + 65 &&
           mouseY > tabY && mouseY < tabY + 35) {
