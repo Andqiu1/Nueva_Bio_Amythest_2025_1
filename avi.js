@@ -311,3 +311,4 @@ function avinextBtn2() {
     console.log("Button 2 detected");
   }
 }
+ 
