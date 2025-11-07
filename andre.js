@@ -2,6 +2,12 @@
 
 var waterCount = 0
 
+// Tutorial Scene Variables (Simple like maren.js)
+var andreScene = 0;
+var andreTextboxes = [];
+var andreNextBtn;
+var mouseWasReleasedAfterTutorial = false;
+
 // ETC State Variables
 var etcState = {
   initialized: false,
@@ -22,6 +28,7 @@ var etcState = {
   electronCount: 0,
   timeCounter: 0,
   paused: false,
+  mode: 'AUTO', // AUTO or MANUAL after tutorial
   selectedElement: null,
   selectedSubtab: null
 };
@@ -76,6 +83,84 @@ var elementInfo = {
   }
 };
 
+// TextBox class for andre (similar to maren.js)
+class andreTextBox {
+  constructor(title, lines) {
+    this.title = title;
+    this.lines = lines;
+  }
+
+  draw() {
+    push();
+    // Background box
+    fill(0, 0, 0, 50);
+    stroke(255, 255, 255);
+    strokeWeight(3);
+    rect(10, 10, 780, 140, 10);
+
+    // Title
+    textSize(24);
+    fill(100, 200, 255);
+    noStroke();
+    textAlign(LEFT);
+    text(this.title, 25, 40);
+
+    // Description
+    textSize(18);
+    fill(255, 255, 255);
+    text(this.lines, 25, 70, 750, 100);
+
+    // Progress indicator
+    textSize(16);
+    fill(200, 200, 200);
+    text("Step " + (andreScene + 1) + " of 8", 660, 40);
+    pop();
+  }
+}
+
+function andreSetup() {
+  // Create NEXT button
+  andreNextBtn = new button(width - 150, height - 80, 130, 60);
+
+  // Initialize textboxes for tutorial
+  andreTextboxes = [
+    new andreTextBox(
+      "Welcome to the Electron Transport Chain!",
+      "The Electron Transport Chain (ETC) is the final stage of cellular respiration.\nIt creates a proton gradient that powers ATP Synthase to produce ATP,\nthe cell's energy currency. Watch as electrons flow through the chain!"
+    ),
+    new andreTextBox(
+      "Complexes I & II: Electron Entry",
+      "NADH and FADH₂ (from earlier stages) deliver high-energy electrons\nto Complex I and Complex II. As electrons enter, Complex I pumps\n4 H⁺ ions into the intermembrane space."
+    ),
+    new andreTextBox(
+      "Complex III: Electron Transfer",
+      "Electrons move through Coenzyme Q to Complex III, which transfers them\nto Cytochrome C. Complex III pumps 4 more H⁺ ions across the membrane,\nincreasing the proton gradient."
+    ),
+    new andreTextBox(
+      "Complex IV: Final Electron Transfer",
+      "Complex IV receives electrons from Cytochrome C and transfers them\nto oxygen (O₂), the final electron acceptor. This forms water (H₂O)\nand pumps 2 more H⁺ ions."
+    ),
+    new andreTextBox(
+      "Proton Gradient Formation",
+      "As the complexes pump H⁺ ions into the intermembrane space,\na concentration gradient builds up. This gradient stores energy,\nlike water behind a dam, ready to power ATP synthesis."
+    ),
+    new andreTextBox(
+      "ATP Synthase: The Molecular Motor",
+      "H⁺ ions flow back through ATP Synthase down their concentration gradient.\nThis flow rotates the enzyme, mechanically forcing ADP and phosphate (Pi)\ntogether to create ATP!"
+    ),
+    new andreTextBox(
+      "The Complete Electron Transport Chain",
+      "Watch the full cycle: NADH/FADH₂ deliver electrons → complexes pump H⁺\n→ electrons combine with O₂ to form H₂O → H⁺ flows through ATP Synthase\n→ ATP is produced. This is how cells generate energy!"
+    ),
+    new andreTextBox(
+      "Tutorial Complete!",
+      "You can now explore the simulation freely.\nClick on any complex, ATP Synthase, or compartment to learn more about it.\nThe simulation runs continuously in the background!"
+    )
+  ];
+
+  andreScene = 0;
+}
+
 function initializeETC() {
   etcState.initialized = true;
   etcState.membraneY = height * 0.5;
@@ -118,7 +203,7 @@ function initializeETC() {
       targetComplex: 0
     });
   }
-  
+
   etcState.fadh2.push({
     x: 80,
     y: etcState.matrixY + 40,
@@ -130,31 +215,37 @@ function initializeETC() {
 }
 
 function andre() {
+  // Initialize tutorial if not done yet
+  if (andreTextboxes.length === 0) {
+    andreSetup();
+  }
+
   if (!etcState.initialized) {
     initializeETC();
   }
-  
+
   etcState.timeCounter++;
-  
+
+  // Track mouse release after tutorial finishes - must be released at least once
+  if (andreScene >= 8 && !mouseWasReleasedAfterTutorial && !mouseIsPressed) {
+    mouseWasReleasedAfterTutorial = true;
+  }
+
   // Draw info panel if element is selected
   if (etcState.selectedElement) {
     drawElementInfo();
   } else {
-    // Normal simulation view
-    // Check for clicks on interactive elements (only in main screen)
-    if (mouseClick) {
-      handleElementClicks();
-    }
-    
+    // Always draw the simulation
+
     // Draw membrane
     drawMembrane();
-    
+
     // Draw protein complexes
     drawProteinComplexes();
-    
+
     // Draw ATP Synthase
     drawATPSynthase();
-    
+
     // Update and draw all molecules
     updateNADH();
     updateFADH2();
@@ -163,9 +254,9 @@ function andre() {
     updateOxygen();
     updateWater();
     updateATP();
-    
-    // Auto-generate NADH/FADH2 periodically
-    if (!etcState.paused && etcState.timeCounter % 180 == 0) {
+
+    // Auto-generate NADH/FADH2 periodically - only in AUTO mode
+    if (!etcState.paused && etcState.mode === 'AUTO' && etcState.timeCounter % 180 == 0) {
       if (etcState.nadh.length < 5) {
         etcState.nadh.push({
           x: 50,
@@ -177,8 +268,8 @@ function andre() {
         });
       }
     }
-    
-    if (!etcState.paused && etcState.timeCounter % 300 == 0) {
+
+    if (!etcState.paused && etcState.mode === 'AUTO' && etcState.timeCounter % 300 == 0) {
       if (etcState.fadh2.length < 3) {
         etcState.fadh2.push({
           x: 50,
@@ -190,9 +281,9 @@ function andre() {
         });
       }
     }
-    
-    // Auto-add oxygen - much more frequently
-    if (!etcState.paused/* && etcState.timeCounter % 15 == 0*/) {
+
+    // Auto-add oxygen - much more frequently - only in AUTO mode
+    if (!etcState.paused && etcState.mode === 'AUTO' /* && etcState.timeCounter % 15 == 0*/) {
       if (etcState.oxygenMolecules.length < 20) {
         etcState.oxygenMolecules.push({
           x: etcState.proteinComplexes[3].x + random(80, 150),
@@ -203,15 +294,29 @@ function andre() {
         });
       }
     }
-    
+
     // Draw compartment labels and backgrounds
     drawCompartments();
+
     // Draw UI elements
     drawInfoPanel();
     drawControls();
-    
-    // Draw clickable hotspots (only in main screen)
+
+    // Draw clickable hotspots
     drawClickableRegions();
+
+    // Check for clicks on interactive elements - but NOT during tutorial or on UI buttons
+    if (mouseClick && andreScene >= 8 && !isClickOnUIButton()) {
+      handleElementClicks();
+    }
+  }
+
+  // Tutorial textbox overlay (if still in tutorial) - DRAW LAST so it's on top
+  if (andreScene < 8 && andreTextboxes[andreScene]) {
+    andreTextboxes[andreScene].draw();
+    if (andreNextBtn) {
+      drawAndreNextButton();
+    }
   }
 }
 
@@ -221,24 +326,30 @@ function drawCompartments() {
   fill(100, 150, 200, 30);
   noStroke();
   rect(0, 0, width, etcState.membraneY - 50);
-  
-  fill(255);
-  textSize(16);
-  textAlign(LEFT);
-  text("Intermembrane Space", 20, 30);
-  text("H+ Concentration: " + etcState.protons.length, 20, 50);
+
+  // Only show labels after tutorial to avoid overlap with tutorial textbox
+  if (andreScene >= 8) {
+    fill(255);
+    textSize(16);
+    textAlign(LEFT);
+    text("Intermembrane Space", 20, 30);
+    text("H+ Concentration: " + etcState.protons.length, 20, 50);
+  }
   pop();
-  
+
   // Matrix (bottom)
   push();
   fill(150, 100, 150, 30);
   noStroke();
   rect(0, etcState.membraneY + 50, width, height);
-  
-  fill(255);
-  textSize(15);
-  textAlign(LEFT);
-  text("Mitochondrial Matrix", 20, etcState.membraneY + 80);
+
+  // Only show label after tutorial
+  if (andreScene >= 8) {
+    fill(255);
+    textSize(15);
+    textAlign(LEFT);
+    text("Mitochondrial Matrix", 20, etcState.membraneY + 80);
+  }
   pop();
 }
 
@@ -524,16 +635,16 @@ function updateElectrons() {
       let dx = target.x - electron.x;
       let dy = target.y - electron.y;
       let dist = sqrt(dx*dx + dy*dy);
-      
+
       if (dist > 5) {
         electron.x += dx / dist * electron.speed;
         electron.y += dy / dist * electron.speed;
       } else {
         electron.currentComplex = electron.targetComplex;
         electron.targetComplex++;
-        
+
         etcState.proteinComplexes[electron.currentComplex].active = true;
-        
+
         // Pump protons at complexes 0, 2, 3
         if (electron.currentComplex == 0 || electron.currentComplex == 2 || electron.currentComplex == 3) {
           for (let j = 0; j < 2; j++) {
@@ -548,12 +659,20 @@ function updateElectrons() {
             }, j * 200);
           }
         }
-        
+
         setTimeout(() => {
           etcState.proteinComplexes[electron.currentComplex].active = false;
         }, 500);
+
+        // Mark that electron has finished complexes
+        if (electron.targetComplex >= etcState.proteinComplexes.length) {
+          electron.seekingOxygen = true;
+        }
       }
-    } else {
+    }
+
+    // Electron has finished all complexes - seek oxygen
+    if (electron.seekingOxygen || electron.targetComplex >= etcState.proteinComplexes.length) {
       // Electron reaches oxygen - actively seek it out
       let nearestOxygen = null;
       let minDist = Infinity;
@@ -785,7 +904,7 @@ function drawInfoPanel() {
   fill(0, 0, 0, 180);
   noStroke();
   rect(10, height - 120, 250, 110, 10);
-  
+
   fill(255);
   textSize(14);
   textAlign(LEFT);
@@ -795,12 +914,159 @@ function drawInfoPanel() {
   text("ATP Produced: " + etcState.atpCount, 20, height - 55);
   text("H+ Gradient: " + etcState.protons.length, 20, height - 35);
   text("Water Made: " + waterCount, 20, height - 15);
+
   pop();
 }
 
 function drawControls() {
-  // Draw next button instead of pause button
-  nextButton();
+  // Only show controls after tutorial completes
+  if (andreScene >= 8) {
+    // Draw next button only after mouse has been released at least once after tutorial
+    if (mouseWasReleasedAfterTutorial) {
+      nextButton();
+    }
+  }
+}
+
+function drawModeToggle() {
+  let btnX = 20;
+  let btnY = height - 60;
+  let btnW = 120;
+  let btnH = 40;
+
+  push();
+  let hovering = mouseX > btnX && mouseX < btnX + btnW && mouseY > btnY && mouseY < btnY + btnH;
+
+  if (etcState.mode === 'AUTO') {
+    fill(hovering ? 120 : 100, hovering ? 220 : 200, hovering ? 120 : 100);
+  } else {
+    fill(hovering ? 220 : 200, hovering ? 180 : 160, hovering ? 100 : 80);
+  }
+
+  stroke(255);
+  strokeWeight(2);
+  rect(btnX, btnY, btnW, btnH, 8);
+
+  fill(255);
+  noStroke();
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text(etcState.mode + " MODE", btnX + btnW/2, btnY + btnH/2);
+  pop();
+
+  // Handle click to toggle
+  if (mouseClick && hovering) {
+    etcState.mode = etcState.mode === 'AUTO' ? 'MANUAL' : 'AUTO';
+  }
+}
+
+function drawManualControls() {
+  let startX = 160;
+  let btnY = height - 60;
+  let btnW = 100;
+  let btnH = 40;
+  let spacing = 110;
+
+  // Add NADH button
+  push();
+  let hoverNADH = mouseX > startX && mouseX < startX + btnW && mouseY > btnY && mouseY < btnY + btnH;
+  fill(hoverNADH ? 150 : 120, hoverNADH ? 220 : 200, hoverNADH ? 150 : 120);
+  stroke(255);
+  strokeWeight(2);
+  rect(startX, btnY, btnW, btnH, 8);
+  fill(255);
+  noStroke();
+  textSize(14);
+  textAlign(CENTER, CENTER);
+  text("Add NADH", startX + btnW/2, btnY + btnH/2);
+  pop();
+
+  if (mouseClick && hoverNADH) {
+    etcState.nadh.push({
+      x: 50,
+      y: etcState.matrixY + random(-30, 30),
+      size: 30,
+      hasElectrons: true,
+      moving: false,
+      targetComplex: 0
+    });
+  }
+
+  // Add FADH2 button
+  push();
+  let hoverFADH = mouseX > startX + spacing && mouseX < startX + spacing + btnW && mouseY > btnY && mouseY < btnY + btnH;
+  fill(hoverFADH ? 120 : 100, hoverFADH ? 180 : 160, hoverFADH ? 240 : 220);
+  stroke(255);
+  strokeWeight(2);
+  rect(startX + spacing, btnY, btnW, btnH, 8);
+  fill(255);
+  noStroke();
+  textSize(14);
+  textAlign(CENTER, CENTER);
+  text("Add FADH₂", startX + spacing + btnW/2, btnY + btnH/2);
+  pop();
+
+  if (mouseClick && hoverFADH) {
+    etcState.fadh2.push({
+      x: 50,
+      y: etcState.matrixY + 50,
+      size: 30,
+      hasElectrons: true,
+      moving: false,
+      targetComplex: 1
+    });
+  }
+
+  // Add O2 button
+  push();
+  let hoverO2 = mouseX > startX + spacing * 2 && mouseX < startX + spacing * 2 + btnW && mouseY > btnY && mouseY < btnY + btnH;
+  fill(hoverO2 ? 240 : 220, hoverO2 ? 120 : 100, hoverO2 ? 120 : 100);
+  stroke(255);
+  strokeWeight(2);
+  rect(startX + spacing * 2, btnY, btnW, btnH, 8);
+  fill(255);
+  noStroke();
+  textSize(14);
+  textAlign(CENTER, CENTER);
+  text("Add O₂", startX + spacing * 2 + btnW/2, btnY + btnH/2);
+  pop();
+
+  if (mouseClick && hoverO2) {
+    etcState.oxygenMolecules.push({
+      x: etcState.proteinComplexes[3].x + random(80, 150),
+      y: etcState.matrixY + random(-40, 40),
+      size: 25,
+      vx: random(-0.5, 0.5),
+      vy: random(-0.5, 0.5)
+    });
+  }
+}
+
+function isClickOnUIButton() {
+  // Check if click is on tutorial textbox area
+  if (andreScene < 8) {
+    if (mouseX > 10 && mouseX < 790 && mouseY > 10 && mouseY < 150) {
+      return true;
+    }
+  }
+
+  // Check if click is on tutorial NEXT button
+  if (andreScene < 8 && andreNextBtn) {
+    let btnSize = andreNextBtn.sizeX;
+    let btnX = andreNextBtn.x - btnSize / 2;
+    let btnY = andreNextBtn.y - andreNextBtn.sizeY / 2;
+    if (mouseX > btnX && mouseX < btnX + btnSize &&
+        mouseY > btnY && mouseY < btnY + andreNextBtn.sizeY) {
+      return true;
+    }
+  }
+
+  // Check if click is on info panel area (to avoid triggering element selection)
+  if (mouseX < 270 && mouseY > height - 130) {
+    return true;
+  }
+
+  return false;
 }
 
 function handleElementClicks() {
@@ -865,6 +1131,41 @@ function drawClickableRegions() {
          synthase.width * 2 + 10, synthase.height + 10, 12);
   }
   pop();
+}
+
+// ===== TUTORIAL NEXT BUTTON =====
+
+function drawAndreNextButton() {
+  push();
+  translate(andreNextBtn.x, andreNextBtn.y);
+  rectMode(CENTER);
+  fill("black");
+  strokeWeight(10);
+  stroke("white");
+
+  if (andreNextBtn.hover) {
+    andreNextBtn.sizev = max(0.05, andreNextBtn.sizev);
+    scale(andreNextBtn.size, andreNextBtn.size);
+  } else {
+    andreNextBtn.sizev = min(0.01, andreNextBtn.sizev);
+    scale(andreNextBtn.size, andreNextBtn.size);
+  }
+
+  rect(0, 0, andreNextBtn.sizeX, andreNextBtn.sizeY, 5);
+  textAlign(CENTER);
+  textSize(35);
+  fill("white");
+  noStroke();
+  rotate(cos(frameCount * 2) * 5);
+  text(andreScene >= 7 ? "FINISH" : "NEXT", 0, 12, andreNextBtn.sizeX, andreNextBtn.sizeY);
+  pop();
+
+  andreNextBtn.work();
+
+  if (andreNextBtn.clicked && andreScene < 8) {
+    andreScene++;
+    // Note: mouseWasReleasedAfterTutorial stays false until mouse is released
+  }
 }
 
 function drawElementInfo() {
