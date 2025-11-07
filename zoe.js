@@ -5,6 +5,7 @@ let zoeCollisionB;
 let zoeCollisionC;
 let zoeTextboxes = [];
 let poop = false;
+let usedH
 
 class zoeTextBox {
   constructor(lines, requiredAction) {
@@ -16,6 +17,7 @@ class zoeTextBox {
 
   draw() {
     if (this.visible == true) {
+     // console.log(this.lines + " is drawing")
       fill(0, 0, 0, 50);
       stroke(255, 255, 255);
       rect(10, 10, 780, 125, 10);
@@ -39,7 +41,7 @@ class zoeTextBox {
 
   keyPressed() {
     console.log("A key was pressed. Which one was it?????");
-    console.log("requried: " + this.requiredAction)
+    console.log("requried: " + this.requiredAction + " for " + this.lines)
     if (this.requiredAction == "space" && key == " ") {
       console.log("space key pressed!");
       this.nextLine();
@@ -197,6 +199,14 @@ function zoeSetup() {
   objects.push(zoeHFromWater);
   objects.push(zoeHFromWater1);
 
+//   zoeH1Dint = new object("H", 250, 750, 30, 30, false, [255, 0, 0], true);
+//   zoeH2Dint = new object("H", 390, 740, 30, 30, false, [255, 0, 0], true);
+//   zoeH3Dint = new object("H", 745, 780, 30, 30, false, [255, 0, 0], true);
+  
+//   objects.push(zoeH1Dint)
+//   objects.push(zoeH2Dint)
+//   objects.push(zoeH3Dint)
+  
   // Draw Photons
   zoePhotonDint = new object(
     "photon",
@@ -375,11 +385,20 @@ function zoeSetup() {
 
   zoeInstructions10 = new zoeTextBox(
     [
-      "Then, the H+ ions naturally diffuse through the ATP Synthase into the stroma in a process\n called chemiosmosis, the process of H+ ions going down their electrochemical gradient,\n because there is a lower concentration of charge and particles in the stroma. The ATP Synthase\n rotates, generating power to combine ADP with a third phosphate group to make ATP.\n (Drag the H+ ion)",
+      "Then, the H+ ions naturally diffuse through the ATP Synthase into the stroma in a process\n called chemiosmosis, the process of H+ ions going down their electrochemical gradient,\n because there is a lower concentration of charge and particles in the stroma. (Drag the H+ ion)",
     ],
     "H+ ions go to ATP synthase"
   );
   zoeTextboxes.push(zoeInstructions10);
+  
+  zoeInstructions10a = new zoeTextBox(
+    [
+      "The ATP Synthase rotates, generating power to combine ADP with a third phosphate\n group to make ATP."
+    ],
+    "ATP animation finishes"
+  );
+  zoeTextboxes.push(zoeInstructions10a);
+  
 
   zoeInstructions11 = new zoeTextBox(
     ["This ATP is one of the products of the light dependent reactions. At the same time, the excited\n electron keeps going to PSI. (Drag the excited electron)"],
@@ -511,11 +530,23 @@ function zoe() {
     for (j = 0; j < objects.length; j++) {
       if (objects[j].type == "ATPSynthase1") {
         if (zoeDetectCollision(objects[j], zoeH) || zoeDetectCollision(objects[j],zoeHFromWater) || zoeDetectCollision(objects[j],zoeHFromWater1)) {
+          console.log("inner statemtnsefinfienfeinfsjdkfhsdkj " + zoeHFromWater1);
+          if (zoeDetectCollision(objects[j],zoeHFromWater1)) {
+            usedH = zoeHFromWater1
+          } else if (zoeDetectCollision(objects[j],zoeHFromWater)) {
+            usedH = zoeHFromWater
+          } else if (zoeDetectCollision(objects[j],zoeH)) {
+            usedH = zoeH
+          }
           zoeInstructions10.nextLine();
         }
       }
     }
-  } else if (zoeSceneIAmInevitable == 1267676767676767) {
+    
+  } else if (zoeSceneIAmInevitable == 12) {
+    
+    zoeInstructions10a.draw()
+    
     console.log("Activating animation")
     if (!poop) {
       poop = true
@@ -524,7 +555,7 @@ function zoe() {
     }
     console.log("Ending animation")    
     
-  } else if (zoeSceneIAmInevitable == 12) {
+  } else if (zoeSceneIAmInevitable == 13) {
     zoeInstructions11.draw()
     
     // Only for 1267676767
@@ -539,7 +570,7 @@ function zoe() {
     }
     
     
-  } else if (zoeSceneIAmInevitable == 13) {
+  } else if (zoeSceneIAmInevitable == 14) {
     
     zoeInstructions12.draw()
     zoeExcitedElectron.working = false
@@ -551,7 +582,7 @@ function zoe() {
     zoeElectron2.x = zoeExcitedElectron.x
     zoeElectron2.y = zoeExcitedElectron.y
     
-  } else if (zoeSceneIAmInevitable == 14) {
+  } else if (zoeSceneIAmInevitable == 15) {
     
     
     zoePhotonDint.working = true
@@ -569,10 +600,10 @@ function zoe() {
       }
     }
     
-  } else if (zoeSceneIAmInevitable == 15) {
+  } else if (zoeSceneIAmInevitable == 16) {
     
     zoeInstructions14.draw()
-    zoeH.draggable = true
+    usedH.draggable = true
     zoeElectron.working = false
     zoePhotonDint.working = false
     
@@ -584,21 +615,21 @@ function zoe() {
     
      for (j = 0; j < objects.length; j++) {
       if (objects[j].type == "NADP+") {
-        if (zoeDetectCollision(objects[j], zoeH) && zoeDetectCollision(objects[j],zoeExcitedElectron) || zoeDetectCollision(objects[j], zoeHFromWater) && zoeDetectCollision(objects[j],zoeExcitedElectron) || zoeDetectCollision(objects[j], zoeHFromWater1) && zoeDetectCollision(objects[j],zoeExcitedElectron)) {
+        if (zoeDetectCollision(objects[j], usedH) && zoeDetectCollision(objects[j],zoeExcitedElectron)) {
           zoeInstructions14.nextLine();
         }
       }
     }
     
-  } else if (zoeSceneIAmInevitable == 16) {
+  } else if (zoeSceneIAmInevitable == 17) {
     zoeInstructions15.draw()
-    zoeH.working = false
+    usedH.working = false
     zoeExcitedElectron.working = false
     zoeNADPPlus.working = false
     zoeNADPH.working = true
     zoeElectron2.x = 475
     zoeElectron2.y = 400
-  } else if (zoeSceneIAmInevitable == 17) {
+  } else if (zoeSceneIAmInevitable == 18) {
     zoeInstructions16.draw()
     
     nextButton()
@@ -642,7 +673,7 @@ function sleep(ms) {
 async function zoeATPAnimation() {
      
     // The H ion dissapears and the ADP appears.
-    zoeH.working = false;
+    usedH.working = false;
     zoeADP.working = true;
     zoePhosphate.working = true;
     
@@ -690,9 +721,9 @@ async function zoeATPAnimation() {
     await sleep(2000)
 
     
-    zoeH.working = true
-    zoeH.x = 530
-    zoeH.y = 300
+    usedH.working = true
+    usedH.x = 680
+    usedH.y = 200
     zoeH.draggable = false
     zoeExcitedElectron.draggable = true
     console.log('poopoop')
