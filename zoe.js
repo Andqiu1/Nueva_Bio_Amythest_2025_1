@@ -641,7 +641,13 @@ function keyPressed() {
 
   if (screen == 0) {
     zoeTextboxes[zoeSceneIAmInevitable - 1].keyPressed();
+  } else if (screen == 7) { // FOR CONCLUSION
+  if (key == " ") {
+    if (conclusionNum != 6)
+    conclusionNum += 1
+  } 
   }
+  
 }
 
 function zoeDetectCollision(object1, object2) {

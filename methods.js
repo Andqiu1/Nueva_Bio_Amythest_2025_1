@@ -8,6 +8,8 @@
 //   }
 // }
 
+var buttonCounterVar=0
+
 function nextButtonWork(){
   if(nextAnimationSequence.running && nextAnimationSequence.count>0){
     nextAnimationSequence.count+=1
@@ -64,9 +66,25 @@ function nextButton(){
   pop()
   nextBtn.work()
   if(nextBtn.clicked){
-     nextAnimationSequence.running=true
+    if(buttonCounterVar<1){
+      nextAnimationSequence.running=true
     nextAnimationSequence.count+=1
+    }
+     buttonCounterVar+=1
+  }else{
+    buttonCounterVar=0
   }
+  
+   // if (avinextButton.clicked) {
+   //  if(aviCountVar<100)
+   //  aviCountVar+=1
+   //  aviscreen += 1;
+   //  console.log("Button detected");
+    
+  // }else{
+  //   // print("workrkk")
+  //   aviCountVar=0
+  // }
 }
 
 class animation{
@@ -305,7 +323,9 @@ class object{
     }else if(this.type=="Moon"){
       image(Moon, this.x, this.y, this.sizeX, this.sizeY)
     }else if(this.type=="NADP+" || this.type=="NADPlus"){
-      image(NADPlus, this.x, this.y, this.sizeX, this.sizeY)
+      image(NADPPlus, this.x, this.y, this.sizeX, this.sizeY)
+    }else if(this.type=="NAD+" || this.type=="NADPlus"){
+      image(NADPlus,this.x,this.y,this.sizeX,this.sizeY)
     }else if(this.type=="NADPH"){
       image(NADPH, this.x, this.y, this.sizeX, this.sizeY)
     }else if(this.type=="NADH"){
@@ -346,6 +366,18 @@ class object{
       image(Sun, this.x, this.y, this.sizeX, this.sizeY)
     }else if(this.type=="Ubiquinose"){
       image(Ubiquinose, this.x, this.y, this.sizeX, this.sizeY)
+    }else if(this.type=="circle"){
+      image(Circle,this.x,this.y,this.sizeX,this.sizeY)
+    }else if(this.type=="line1"){
+      image(Line1,this.x,this.y,this.sizeX,this.sizeY)
+    }else if(this.type=="downline"){
+      image(Downline, this.x, this.y, this.sizeX, this.sizeY)
+    }else if(this.type=="curvyline"){
+      image(Curvyline, this.x, this.y, this.sizeX, this.sizeY)
+    }else if(this.type=="twistline"){
+      image(Twistline, this.x, this.y, this.sizeX, this.sizeY)
+    }else if(this.type=="pep"){
+      image(Pep, this.x, this.y, this.sizeX, this.sizeY)
     }else{
       // Fallback to ellipse if no image matches
       ellipseMode(CENTER)
@@ -412,10 +444,10 @@ class object{
     if(this.dragging && ((this.x==this.preX)||(this.y==this.preY))){
         this.x=pmouseX+this.mouseOffsetX
       this.y=pmouseY+this.mouseOffsetY
-      if(this.particleColor != [] && this.particleColor.length>0){
+      if(this.particleColor != [] && this.particleColor.length>0 && frameCount%2==0){
         // print("particle")
         // print(this.particleColor)
-        particleShower(this.x, this.y, 30, 5, max(this.sizeX,this.sizeY)*0.9/2, 0, sqrt((abs(this.x-this.preX))^2+(abs(this.y-this.preY))^2), 0.9, 0.99, 0.85, 0.87, this.particleColor[0],this.particleColor[1],this.particleColor[2], 15,29)
+        particleShower(this.x, this.y, 25, 5, max(this.sizeX,this.sizeY)*0.9/2, 0, sqrt((abs(this.x-this.preX))^2+(abs(this.y-this.preY))^2), 0.9, 0.99, 0.85, 0.87, this.particleColor[0],this.particleColor[1],this.particleColor[2], 15,29)
       }
       
       

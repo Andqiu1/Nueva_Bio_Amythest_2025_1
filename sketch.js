@@ -1,12 +1,13 @@
-var screen=0
+var screen = 5
 var particles=[]
 var mouseClick=false
 var objects=[]
 var nextBtn;
-var nextAnim=[100,1,68]
+var nextAnim=[50,1,34]
 var nextAnimationSequence=new animation(nextAnim)
 var setupRun=[false,false,false,false,false]
   
+var Mitochondria;
 var ThreeCarbonChain;
 var ThreeBiphosphoglycerate;
 var ThreePG;
@@ -52,6 +53,7 @@ var Moon;
 var NADPlus;
 var NADPH;
 var NADH;
+var NADPPlus;
 var NitrateSynthase;
 var OTwo;
 var Oxyloacetate;
@@ -70,12 +72,20 @@ var SuccinylCoA;
 var Succinyl;
 var Sun;
 var Ubiquinose;
+var Circle;
+var Line1;
+var Downline;
+var Curvyline;
+var Twistline;
+var Pep;
+var Krebs;
 
 
 
 
 
 function preload(){
+  Mitochondria=loadImage("Art/download__22_-removebg-preview.png")
   ThreeCarbonChain=loadImage("Art/3 Carbon Chain.png")
   ThreeBiphospholgycerate=loadImage("Art/3Biphosphoglycerate.png")
   ThreePG=loadImage("Art/3PG.png")
@@ -118,9 +128,10 @@ function preload(){
   MesophyllOne=loadImage("Art/Mesophyll1.png")
   MesophyllTwo=loadImage("Art/Mesophyll2.png")
   Moon=loadImage("Art/Moon.png")
-  NADPlus=loadImage("Art/NADP+.png")
+  NADPPlus=loadImage("Art/NADP+.png")
   NADPH=loadImage("Art/NADPH.png")
   NADH=loadImage("Art/NADH.png")
+  NADPlus=loadImage("Art/NAD+.png")
   NitrateSynthase=loadImage("Art/Nitrate Synthase.png")
   OTwo=loadImage("Art/O2.png")
   Oxyloacetate=loadImage("Art/Oxyloacetate.png")
@@ -139,6 +150,13 @@ function preload(){
   Succinyl=loadImage("Art/Succinyl.png")
   Sun=loadImage("Art/Sun.png")
   Ubiquinose=loadImage("Art/Ubiquinose.png")
+  Circle=loadImage("Art/circle.png")
+  Line1=loadImage("Art/line1.png")
+  Downline=loadImage("Art/downline.png")
+  Curvyline=loadImage("Art/curvyline.png")
+  Twistline=loadImage("Art/twistline.png")
+  Pep=loadImage("Art/pep.png")
+  Krebs=loadImage("Art/download (1).png")
 }
 
 function setup() {
@@ -159,9 +177,13 @@ function draw() {
   // image(CoenzymeA,width/2,height/2,width,height)
 //   particleDemo();
   
-  if(screen==-1){
+  if(screen==-2){
     
     start()
+    runParticles()
+  runObjects()
+  }else if(screen==-1){
+    photosynthesis()
     runParticles()
   runObjects()
   }else if(screen==0){
@@ -193,6 +215,10 @@ function draw() {
     runParticles()
   runObjects()
   }else if(screen==3){
+    
+    cellularRespiration()
+    
+  }else if(screen==4){
     if(setupRun[3]==false){
       leoSetup()
       setupRun[3]=true
@@ -201,7 +227,7 @@ function draw() {
     leo()
     runParticles()
   runObjects()
-  }else if(screen==4){
+  }else if(screen==5){
     if(setupRun[4]==false){
       shaayerSetup()
       setupRun[4]=true
@@ -209,9 +235,9 @@ function draw() {
     runParticles()
   runObjects()
     shaayer()
-  }else if(screen==5){
-    andre()
   }else if(screen==6){
+    andre()
+  }else if(screen==7){
     conclusion()
   }
   
@@ -224,4 +250,5 @@ function draw() {
 
 function mouseClicked(){
   mouseClick=true
+  console.log("Mouse X:" + mouseX + ", Mouse Y:" + mouseY)
 }
